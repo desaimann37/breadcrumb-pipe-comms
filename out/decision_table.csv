@@ -1,0 +1,16 @@
+scenario,title,carrier,diameter_in,cutoff_mhz,below_cutoff,d_over_lambda,model_valid,db_per_km,hop_m,relays_for_run,feasible,rate_mbps,length_m
+water_main_24,24 in water transmission main (dewatered),915 MHz,24,288,False,1.86,False,74.2,720,5,True,14.4,3219
+water_main_24,24 in water transmission main (dewatered),2.44 GHz,24,288,False,4.96,True,47.0,930,4,True,14.4,3219
+water_main_24,24 in water transmission main (dewatered),5.8 GHz,24,288,False,11.79,True,38.3,950,4,True,14.4,3219
+interceptor_36,36 in concrete interceptor (live flow),915 MHz,36,205,False,2.61,False,982.4,50,78,True,21.4,3219
+interceptor_36,36 in concrete interceptor (live flow),2.44 GHz,36,205,False,6.96,True,295.9,140,30,True,20.5,3219
+interceptor_36,36 in concrete interceptor (live flow),5.8 GHz,36,205,False,16.57,True,120.3,280,15,True,20.9,3219
+force_main_12,12 in force main with scale and a hard bend,915 MHz,12,588,False,0.91,False,1096.4,50,96,True,28.8,3219
+force_main_12,12 in force main with scale and a hard bend,2.44 GHz,12,588,False,2.43,False,525.9,90,43,True,28.5,3219
+force_main_12,12 in force main with scale and a hard bend,5.8 GHz,12,588,False,5.79,True,299.7,140,28,True,21.5,3219
+sewer_8,8 in clay sewer (failure boundary),915 MHz,8,908,False,0.59,False,233208.4,0,89,False,0.0,900
+sewer_8,8 in clay sewer (failure boundary),2.44 GHz,8,908,False,1.57,False,7688.2,0,89,False,64.8,900
+sewer_8,8 in clay sewer (failure boundary),5.8 GHz,8,908,False,3.74,True,2480.3,10,89,False,82.3,900
+tunnel_72,72 in dry tunnel (best case),915 MHz,72,96,False,5.58,True,146.5,300,10,True,20.8,3219
+tunnel_72,72 in dry tunnel (best case),2.44 GHz,72,96,False,14.87,True,27.5,1320,2,True,14.4,3219
+tunnel_72,72 in dry tunnel (best case),5.8 GHz,72,96,False,35.38,True,9.5,2410,1,True,14.4,3219

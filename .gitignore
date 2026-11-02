@@ -1,0 +1,13 @@
+__pycache__/
+*.pyc
+.DS_Store
+
+# Generated telemetry: large and regenerable with `python cli.py run --all`.
+out/history_*.csv
+out/field_*.csv
+out/missions.json
+
+# The headline evidence table and report ARE committed, so judges can read
+# the results without running anything:
+#   out/RESULTS.md
+#   out/decision_table.csv

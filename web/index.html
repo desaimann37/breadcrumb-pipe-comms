@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>BREADCRUMB &middot; Untethered Pipe Inspection Comms</title>
+<link rel="icon" href="data:," />
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<header class="topbar">
+  <div class="brand">
+    <span class="logo">&#9678;</span>
+    <div>
+      <h1>BREADCRUMB</h1>
+      <p>Untethered wireless video &amp; control for long-distance pipe inspection</p>
+    </div>
+  </div>
+  <div class="topbar-right">
+    <label class="field">
+      <span>Scenario</span>
+      <select id="scenario"></select>
+    </label>
+    <div class="status" id="phase-chip">idle</div>
+    <div class="clock">
+      <span id="clock">00:00:00</span>
+      <small id="timescale-label">1&times;</small>
+    </div>
+    <div class="conn" id="conn">connecting</div>
+  </div>
+</header>
+
+<main>
+
+  <section class="panel panel-pipe">
+    <div class="panel-head">
+      <h2>Pipe run &amp; relay chain</h2>
+      <div class="legend">
+        <span><i class="sw base"></i>base station</span>
+        <span><i class="sw node"></i>relay</span>
+        <span><i class="sw bot"></i>crawler</span>
+        <span><i class="sw video"></i>video up</span>
+        <span><i class="sw ctrl"></i>control down</span>
+      </div>
+    </div>
+    <canvas id="pipe" height="300"></canvas>
+    <div class="panel-sub">
+      <canvas id="zoom" height="120"></canvas>
+      <div class="zoom-caption" id="zoom-caption">local view</div>
+    </div>
+  </section>
+
+  <section class="panel panel-cam">
+    <div class="panel-head">
+      <h2>Operator video</h2>
+      <div class="cam-tier" id="cam-tier">&mdash;</div>
+    </div>
+    <div class="cam-wrap">
+      <canvas id="cam" width="640" height="360"></canvas>
+      <img id="cam-live" alt="live camera feed" />
+      <div class="cam-osd">
+        <div class="osd-line"><span id="osd-res">&mdash;</span></div>
+        <div class="osd-line"><span id="osd-lat">&mdash;</span></div>
+        <div class="osd-line"><span id="osd-loss">&mdash;</span></div>
+      </div>
+      <div class="cam-lost" id="cam-lost">
+        <strong>VIDEO LINK DOWN</strong>
+        <span>control channel still up &mdash; crawler drivable</span>
+      </div>
+    </div>
+    <div class="cam-note" id="cam-note"></div>
+  </section>
+
+  <section class="panel panel-tiles">
+    <div class="tiles" id="tiles"></div>
+  </section>
+
+  <section class="panel panel-hops">
+    <div class="panel-head"><h2>Hop-by-hop link budget</h2>
+      <div class="legend"><span id="hop-summary"></span></div>
+    </div>
+    <div class="hops" id="hops"></div>
+  </section>
+
+  <section class="panel panel-controls">
+    <div class="panel-head"><h2>Operator console</h2></div>
+
+    <div class="ctrl-row">
+      <button class="btn primary" data-cmd="auto">&#9654; Auto inspection</button>
+      <button class="btn" data-cmd="drive">Drive in</button>
+      <button class="btn" data-cmd="stop">Hold</button>
+      <button class="btn" data-cmd="return">Return</button>
+      <button class="btn" data-cmd="deploy">Drop relay</button>
+      <button class="btn danger" id="estop">&#9632; EMERGENCY STOP</button>
+      <button class="btn ghost" data-cmd="clear_estop">Re-arm</button>
+      <button class="btn ghost" data-cmd="reset">Reset run</button>
+    </div>
+
+    <div class="ctrl-grid">
+      <label class="field">
+        <span>Crawler speed <b id="speed-val">0.24</b> m/s</span>
+        <input type="range" id="speed" min="0.04" max="0.35" step="0.01" value="0.24" />
+      </label>
+      <label class="field">
+        <span>Sim speed <b id="ts-val">1</b>&times;</span>
+        <input type="range" id="timescale" min="0" max="6" step="1" value="0" />
+      </label>
+      <label class="field">
+        <span>Carrier</span>
+        <select id="freq">
+          <option value="433">433 MHz (ISM)</option>
+          <option value="915">915 MHz (ISM)</option>
+          <option value="2437" selected>2.437 GHz (Wi-Fi ch 6)</option>
+          <option value="5800">5.8 GHz (ISM)</option>
+        </select>
+      </label>
+      <label class="field">
+        <span>Channel bandwidth</span>
+        <select id="bw">
+          <option value="5">5 MHz</option>
+          <option value="10">10 MHz</option>
+          <option value="20" selected>20 MHz</option>
+          <option value="40">40 MHz</option>
+        </select>
+      </label>
+      <label class="field">
+        <span>Tx power</span>
+        <select id="txp">
+          <option value="14">14 dBm (25 mW)</option>
+          <option value="20" selected>20 dBm (100 mW)</option>
+          <option value="27">27 dBm (500 mW)</option>
+          <option value="30">30 dBm (1 W)</option>
+        </select>
+      </label>
+      <label class="field">
+        <span>Relay build</span>
+        <select id="relaybuild">
+          <option value="1">single radio, 1 channel</option>
+          <option value="2">dual radio, 3 channels</option>
+        </select>
+      </label>
+      <label class="field">
+        <span>Relay policy</span>
+        <select id="policy">
+          <option value="quality">Quality (most relays)</option>
+          <option value="balanced" selected>Balanced</option>
+          <option value="stretch">Stretch (fewest relays)</option>
+        </select>
+      </label>
+      <label class="field">
+        <span>Relay magazine <b id="mag-val">16</b></span>
+        <input type="range" id="magazine" min="2" max="32" step="1" value="16" />
+      </label>
+    </div>
+
+    <div class="plan" id="plan">
+      <button class="btn ghost small" id="plan-btn">Plan relay spacing for this pipe</button>
+      <div id="plan-out"></div>
+    </div>
+  </section>
+
+  <section class="panel panel-charts">
+    <div class="panel-head"><h2>Mission record</h2>
+      <div class="legend">
+        <span><i class="sw margin"></i>link margin (dB)</span>
+        <span><i class="sw rate"></i>video goodput (Mbps)</span>
+      </div>
+    </div>
+    <canvas id="chart" height="190"></canvas>
+    <div class="chart-foot">
+      <span id="chart-foot">distance along pipe &rarr;</span>
+      <a id="export" class="btn ghost small" href="/api/history" download="mission_history.json">Export telemetry</a>
+    </div>
+  </section>
+
+  <section class="panel panel-log">
+    <div class="panel-head"><h2>Event log</h2></div>
+    <ul class="log" id="log"></ul>
+  </section>
+
+  <section class="panel panel-why">
+    <div class="panel-head"><h2>Why this pipe behaves the way it does</h2></div>
+    <div class="why" id="why"></div>
+  </section>
+
+</main>
+
+<script src="app.js"></script>
+</body>
+</html>
